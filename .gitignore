@@ -3,3 +3,5 @@
 /.viminfo
 .DS_Store
 .gitmodules
+/local/vendor
+/local/composer.lock
