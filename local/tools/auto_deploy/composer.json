@@ -1,0 +1,29 @@
+{
+  "name": "vf92/auto_deploy",
+  "description": "Автодеплой для Битрикс проектов",
+  "homepage": "https://github.com/Vampiref92/AutoDeploy",
+  "type": "wordpress-plugin",
+  "license": "proprietary",
+  "keywords": [
+    "git",
+    "bitbacket",
+    "bitrix",
+    "deploy",
+    "auto",
+    "sergey",
+    "frolov",
+    "bash"
+  ],
+  "authors": [
+    {
+      "name": "Sergey Frolov",
+      "email": "vampiref92@yandex.ru"
+    }
+  ],
+  "require": {
+    "php": ">=5.6",
+    "composer/installers": "~1",
+    "andreyryabin/sprint.migration": "^2.8.6"
+  },
+  "minimum-stability": "stable"
+}

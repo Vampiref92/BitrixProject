@@ -7,6 +7,7 @@ use Bitrix\Main\ModuleManager;
 use Bitrix\Main\SiteDomainTable;
 use Bitrix\Main\SiteTable;
 use Vf92\BitrixUtils\Migration\SprintMigrationBase;
+use Vf92\MiscUtils\EnvType;
 
 class AddSiteSettings20180913121900 extends SprintMigrationBase
 {
@@ -71,12 +72,13 @@ class AddSiteSettings20180913121900 extends SprintMigrationBase
                 [
                     'className' => '\\Bitrix\\Main\\DB\\MysqliConnection',
                     'host'      => 'localhost',
-                    'database'  => 'ruspetrol_rp',
-                    'login'     => 'ruspetrol_rp',
-                    'password'  => 'Q3m8O6w5',
+                    'database'  => 'db',
+                    'login'     => 'user',
+                    'password'  => 'pass',
                     'options'   => 2,
                 ],
         ];
+        // при добавлении собсно мердж, при изменениии просто подмена
         $configuration->addReadonly('connections', array_merge($configuration->get('connections'), $additionalConfig));
         $configuration->saveConfiguration();
         $this->log()->info('Конфигурация успешно сохранена');
@@ -115,7 +117,11 @@ class AddSiteSettings20180913121900 extends SprintMigrationBase
         Option::set('main', 'event_log_marketplace', 'Y');
 
         // установка для разработки
-        Option::set('main', 'update_devsrv', 'Y');
+        if (EnvType::isDev()) {
+            Option::set('main', 'update_devsrv', 'Y');
+        } else {
+            Option::set('main', 'update_devsrv', 'N');
+        }
         $this->log()->info('Настройк модулей успешно изменены');
 
         //Удаление неиспользуемых модулей
