@@ -5,10 +5,6 @@
 /local/cache
 /local/modules/sprint.migration
 
-/composer.phar
-/composer-setup.php
-/local/composer-setup.php
-
 /node_modules
 /local/node_modules
 
@@ -20,10 +16,15 @@
 
 .gitmodules
 
+.well-known
 /robots.txt
 *.lock
 *.log
 sitemap*.xml
+google*.html
+yandex*.html
+google*.txt
+yandex*.txt
 
 /local/php_interface/.project_settings.local.php
 /local/tools/auto_deploy
