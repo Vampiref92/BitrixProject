@@ -2,10 +2,13 @@
 
 namespace Sprint\Migration;
 
+use Bitrix\Main\Config\Configuration;
 use Bitrix\Main\Config\Option;
+use Bitrix\Main\DB\MysqliConnection;
 use Bitrix\Main\ModuleManager;
 use Bitrix\Main\SiteDomainTable;
 use Bitrix\Main\SiteTable;
+use Vf92\BitrixUtils\Config\Dbconn;
 use Vf92\BitrixUtils\Migration\SprintMigrationBase;
 use Vf92\MiscUtils\EnvType;
 
@@ -20,9 +23,37 @@ class AddSiteSettings20180913121900 extends SprintMigrationBase
         $siteName = 'SiteName';
         $siteNameFull = 'SiteNameFull';
         $serverName = 'site_address.ru';
-
+        /** устанавливать ли в главном модуле email, site_name, server_name */
+        $setMainModuleSiteSettings = true;
 //        $email = 'info@' . $serverName;
         $email = 'email';
+        /** добавляем|меняем ли соединение с БД */
+        $setDbParams = true;
+
+        if ($setDbParams) {
+            /** add or replace */
+            $typeDbParams = 'replace';
+            $dbList = [
+                'default' => [
+                    'host'     => 'localhost',
+                    'database' => 'db',
+                    'login'    => 'user',
+                    'password' => 'pass',
+                ],
+            ];
+        }
+        /** удаляемые модули */
+        $deleteModules = [
+            'blog',
+            'mobileapp',
+            'vote',
+            'translate',
+            'subscribe',
+            'search',
+            'socialservices',
+            'forum',
+            'photogallery',
+        ];
 
         //Установка настроек сайта
         $res = SiteTable::update($siteId, [
@@ -57,35 +88,52 @@ class AddSiteSettings20180913121900 extends SprintMigrationBase
                     $this->log()->info('Успешно добавлен домен ' . $addSite);
                 } else {
                     $this->log()->error('Ошибка при добавлении домена ' . $addSite . ': ' . implode(
-                        '; ',
+                            '; ',
                             $res->getErrorMessages()
-                    ));
+                        ));
                     return false;
                 }
             }
         }
 
         //Изменяем конфиг
-        $configuration = \Bitrix\Main\Config\Configuration::getInstance();
-        $additionalConfig = [
-            'ruspetrol' =>
-                [
-                    'className' => '\\Bitrix\\Main\\DB\\MysqliConnection',
-                    'host'      => 'localhost',
-                    'database'  => 'db',
-                    'login'     => 'user',
-                    'password'  => 'pass',
-                    'options'   => 2,
-                ],
-        ];
-        // при добавлении собсно мердж, при изменениии просто подмена
-        $configuration->addReadonly('connections', array_merge($configuration->get('connections'), $additionalConfig));
-        $configuration->saveConfiguration();
-        $this->log()->info('Конфигурация успешно сохранена');
+        if ($setDbParams && !empty($dbList)) {
+            $configuration = Configuration::getInstance();
+            $baseConfig = [
+                'className' => MysqliConnection::class,
+                'options'   => 2
+            ];
+            foreach ($dbList as &$item) {
+                /** @noinspection SlowArrayOperationsInLoopInspection */
+                $item = \array_merge($baseConfig, $item);
+            }
+            $additionalConfig = $dbList;
+            if($typeDbParams === 'add'){
+                $dbList = array_merge($configuration->get('connections'), $additionalConfig);
+            }
+            $configuration->addReadonly('connections', $dbList);
+            $configuration->saveConfiguration();
 
-        Option::set('main', 'site_name', $siteNameFull);
-        Option::set('main', 'server_name', $serverName);
-        Option::set('main', 'email_from', $email);
+            if($typeDbParams === 'replace') {
+                if(isset($dbList['default']) && !empty($dbList['default'])) {
+                    $dbConn = Dbconn::get();
+                    $dbConn['db']['Host'] = $dbList['default']['host'];
+                    $dbConn['db']['Login'] = $dbList['default']['login'];
+                    $dbConn['db']['Password'] = $dbList['default']['password'];
+                    $dbConn['db']['Name'] = $dbList['default']['database'];
+                    $dbConn['define']['db']['BX_USE_MYSQLI'] = true;
+                    Dbconn::save($dbConn);
+                }
+            }
+
+            $this->log()->info('Настройки Бд успешно сохранены');
+        }
+
+        if ($setMainModuleSiteSettings) {
+            Option::set('main', 'site_name', $siteNameFull);
+            Option::set('main', 'server_name', $serverName);
+            Option::set('main', 'email_from', $email);
+        }
         //быстрая отдача по nginx
         Option::set('main', 'bx_fast_download', 'Y');
 
@@ -96,8 +144,10 @@ class AddSiteSettings20180913121900 extends SprintMigrationBase
         Option::set('main', 'move_js_to_body', 'Y');
         Option::set('main', 'compres_css_js_files', 'Y');
 
-        Option::set('main', 'phone_number_default_country', '1'); //Россия
-        Option::set('main', 'captcha_registration', 'Y'); //капча при регистрации
+        //Россия
+        Option::set('main', 'phone_number_default_country', '1');
+        //капча при регистрации
+        Option::set('main', 'captcha_registration', 'Y');
 
         //включаем полное логирование
         Option::set('main', 'event_log_logout', 'Y');
@@ -125,17 +175,6 @@ class AddSiteSettings20180913121900 extends SprintMigrationBase
         $this->log()->info('Настройк модулей успешно изменены');
 
         //Удаление неиспользуемых модулей
-        $deleteModules = [
-            'blog',
-            'mobileapp',
-            'vote',
-            'translate',
-            'subscribe',
-            'search',
-            'socialservices',
-            'forum',
-            'photogallery',
-        ];
         foreach ($deleteModules as $deleteModule) {
             if (ModuleManager::isModuleInstalled($deleteModule)) {
                 ModuleManager::delete($deleteModule);
