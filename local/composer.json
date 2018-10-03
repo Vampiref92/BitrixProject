@@ -31,7 +31,7 @@
   },
   "require": {
     "wikimedia/composer-merge-plugin": "dev-master",
-    "vf92/bitrix-base": "^2.3",
+    "vf92/bitrix-base": "^2.4.2",
     "vf92/auto_deploy": "^1.1.5",
     "andreyryabin/sprint.migration": "^2.8.6",
     "webarchitect609/bitrix-user-type": "^0.1",

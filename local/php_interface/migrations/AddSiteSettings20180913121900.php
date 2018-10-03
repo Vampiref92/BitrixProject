@@ -2,13 +2,9 @@
 
 namespace Sprint\Migration;
 
-use Bitrix\Main\Config\Configuration;
 use Bitrix\Main\Config\Option;
-use Bitrix\Main\DB\MysqliConnection;
-use Bitrix\Main\ModuleManager;
 use Bitrix\Main\SiteDomainTable;
 use Bitrix\Main\SiteTable;
-use Vf92\BitrixUtils\Config\Dbconn;
 use Vf92\BitrixUtils\Migration\SprintMigrationBase;
 use Vf92\MiscUtils\EnvType;
 
@@ -27,33 +23,6 @@ class AddSiteSettings20180913121900 extends SprintMigrationBase
         $setMainModuleSiteSettings = true;
 //        $email = 'info@' . $serverName;
         $email = 'email';
-        /** добавляем|меняем ли соединение с БД */
-        $setDbParams = true;
-
-        if ($setDbParams) {
-            /** add or replace */
-            $typeDbParams = 'replace';
-            $dbList = [
-                'default' => [
-                    'host'     => 'localhost',
-                    'database' => 'db',
-                    'login'    => 'user',
-                    'password' => 'pass',
-                ],
-            ];
-        }
-        /** удаляемые модули */
-        $deleteModules = [
-            'blog',
-            'mobileapp',
-            'vote',
-            'translate',
-            'subscribe',
-            'search',
-            'socialservices',
-            'forum',
-            'photogallery',
-        ];
 
         //Установка настроек сайта
         $res = SiteTable::update($siteId, [
@@ -94,39 +63,6 @@ class AddSiteSettings20180913121900 extends SprintMigrationBase
                     return false;
                 }
             }
-        }
-
-        //Изменяем конфиг
-        if ($setDbParams && !empty($dbList)) {
-            $configuration = Configuration::getInstance();
-            $baseConfig = [
-                'className' => MysqliConnection::class,
-                'options'   => 2
-            ];
-            foreach ($dbList as &$item) {
-                /** @noinspection SlowArrayOperationsInLoopInspection */
-                $item = \array_merge($baseConfig, $item);
-            }
-            $additionalConfig = $dbList;
-            if($typeDbParams === 'add'){
-                $dbList = array_merge($configuration->get('connections'), $additionalConfig);
-            }
-            $configuration->addReadonly('connections', $dbList);
-            $configuration->saveConfiguration();
-
-            if($typeDbParams === 'replace') {
-                if(isset($dbList['default']) && !empty($dbList['default'])) {
-                    $dbConn = Dbconn::get();
-                    $dbConn['db']['Host'] = $dbList['default']['host'];
-                    $dbConn['db']['Login'] = $dbList['default']['login'];
-                    $dbConn['db']['Password'] = $dbList['default']['password'];
-                    $dbConn['db']['Name'] = $dbList['default']['database'];
-                    $dbConn['define']['db']['BX_USE_MYSQLI'] = true;
-                    Dbconn::save($dbConn);
-                }
-            }
-
-            $this->log()->info('Настройки Бд успешно сохранены');
         }
 
         if ($setMainModuleSiteSettings) {
@@ -172,15 +108,9 @@ class AddSiteSettings20180913121900 extends SprintMigrationBase
         } else {
             Option::set('main', 'update_devsrv', 'N');
         }
-        $this->log()->info('Настройк модулей успешно изменены');
 
-        //Удаление неиспользуемых модулей
-        foreach ($deleteModules as $deleteModule) {
-            if (ModuleManager::isModuleInstalled($deleteModule)) {
-                ModuleManager::delete($deleteModule);
-            }
-        }
-        $this->log()->info('Удаление модулей успешно завершено');
+        $this->log()->info('Настройк модулей успешно изменены');
+        return true;
     }
 
     public function down()
