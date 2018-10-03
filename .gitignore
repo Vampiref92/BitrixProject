@@ -5,3 +5,4 @@
 .gitmodules
 /local/vendor
 /local/composer.lock
+/local/tools/auto_deploy
