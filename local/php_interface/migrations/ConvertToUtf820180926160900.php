@@ -14,6 +14,13 @@ class ConvertToUtf820180926160900 extends SprintMigrationBase
     public function up()
     {
         /** @todo првоерка на mbstring.func_overload 2 и mbstring.internal_encoding utf8 */
+        ob_start();
+        phpinfo();
+        $info = ob_get_clean();
+        preg_match_all('/<tr><td\sclass=[\'"]e[\'"]\s*>(mbstring\.(.((?!<\/).)*))<\/td><td\sclass=[\'"]v[\'"]\s*><i>(.*)<\/i><\/td><td\sclass=[\'"]v[\'"]\s*><i>(.*)<\/i><\/td>/im',$info,$matches);
+        var_dump($matches);
+        echo $info;
+
         $dbСonnList = Dbconn::get();
         $config = Configuration::getInstance();
         $configUtf8 = $config->get('utf_mode');
