@@ -31,15 +31,19 @@
   },
   "require": {
     "wikimedia/composer-merge-plugin": "dev-master",
-    "vf92/bitrix-base": "^2.4.2",
-    "vf92/auto_deploy": "^1.1.5",
+    "vf92/bitrix-base": "^2.6.6",
+    "vf92/auto_deploy": "^1.2.1",
     "andreyryabin/sprint.migration": "^2.8.6",
     "webarchitect609/bitrix-user-type": "^0.1",
     "webarchitect609/bitrix-iblock-property-type": "^1.0.3",
+
     "symfony/routing": ">=3.4",
+    "symfony/expression-language": ">=3.4",
     "symfony/yaml": ">=3.1",
     "symfony/config": ">=3.1",
-    "symfony/console": ">=3.1"
+    "symfony/console": ">=3.1",
+
+    "doctrine/annotations": ">=1.4"
   },
   "require-dev": {
     "dotsunited/php-cs-fixer-config": "^1.4",
