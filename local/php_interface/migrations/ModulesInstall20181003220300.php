@@ -3,7 +3,7 @@
 use Bitrix\Main\ModuleManager;
 use Vf92\BitrixUtils\Migration\SprintMigrationBase;
 
-class InstallModules20181003220300 extends SprintMigrationBase
+class ModulesInstall20181003220300 extends SprintMigrationBase
 {
     protected $description = 'Установка модулей';
 

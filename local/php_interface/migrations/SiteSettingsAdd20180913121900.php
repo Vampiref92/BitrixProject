@@ -11,7 +11,7 @@ use Vf92\BitrixUtils\Config\Dbconn;
 use Vf92\BitrixUtils\Migration\SprintMigrationBase;
 use Vf92\MiscUtils\EnvType;
 
-class AddSiteSettings20180913121900 extends SprintMigrationBase
+class SiteSettingsAdd20180913121900 extends SprintMigrationBase
 {
     protected $description = 'Задание настроек сайта';
 

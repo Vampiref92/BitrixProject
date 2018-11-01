@@ -2,16 +2,17 @@
 
 use Bitrix\Main\Config\Configuration;
 use Bitrix\Main\DB\MysqliConnection;
+use Vf92\BitrixUtils\Config\Dbconn;
 use Vf92\BitrixUtils\Migration\SprintMigrationBase;
 
-class AddDatabase20181003215000 extends SprintMigrationBase
+class DatabaseChange20181003215200 extends SprintMigrationBase
 {
-    protected $description = 'Добавление нового соединения';
+    protected $description = 'Изменение соединения с БД';
 
     public function up()
     {
         $dbList = [
-            'custom' => [
+            'default' => [
                 'host'     => 'localhost',
                 'database' => 'db',
                 'login'    => 'user',
@@ -20,11 +21,11 @@ class AddDatabase20181003215000 extends SprintMigrationBase
         ];
 
         //Изменяем конфиг
-        if (!empty($dbList)) {
+        if (isset($dbList['default']) && !empty($dbList['default'])) {
             $configuration = Configuration::getInstance();
             $baseConfig = [
                 'className' => MysqliConnection::class,
-                'options'   => 2
+                'options'   => 2,
             ];
             foreach ($dbList as &$item) {
                 /** @noinspection SlowArrayOperationsInLoopInspection */
@@ -38,12 +39,19 @@ class AddDatabase20181003215000 extends SprintMigrationBase
             $configuration->addReadonly('connections', $dbList);
             $configuration->saveConfiguration();
 
+            $dbConn = Dbconn::get();
+            $dbConn['db']['Host'] = $dbList['default']['host'];
+            $dbConn['db']['Login'] = $dbList['default']['login'];
+            $dbConn['db']['Password'] = $dbList['default']['password'];
+            $dbConn['db']['Name'] = $dbList['default']['database'];
+            $dbConn['define']['db']['BX_USE_MYSQLI'] = true;
+            Dbconn::save($dbConn);
+
             $this->log()->info('Настройки Бд успешно сохранены');
         }
     }
 
     public function down()
     {
-
     }
 }

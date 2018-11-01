@@ -31,8 +31,8 @@
   },
   "require": {
     "wikimedia/composer-merge-plugin": "dev-master",
-    "vf92/bitrix-base": "^2.6.6",
-    "vf92/auto_deploy": "^1.2.1",
+    "vf92/bitrix-base": "^2.6.8",
+    "vf92/auto_deploy": "^1.2.4",
     "andreyryabin/sprint.migration": "^2.8.6",
     "webarchitect609/bitrix-user-type": "^0.1",
     "webarchitect609/bitrix-iblock-property-type": "^1.0.3",
@@ -52,8 +52,8 @@
   },
   "suggest": {
     "bitrix": ">=16.5.0, желателен битрикс >= 17.5.2, чтобы работало where в orm, для работы композера от битрикс нужна версия >= 18.0.2, добавить в merge_plugin ../bitrix/composer-bx.json",
-    "vf92/bitrix-base": "^2.2.1 Набор вспомогательных классов",
-    "vf92/auto_deploy": "^1.1.5 Автодеплоер",
+    "vf92/bitrix-base": "^2.6.8 Набор вспомогательных классов",
+    "vf92/auto_deploy": "^1.2.4 Автодеплоер",
     "andreyryabin/sprint.migration": "^2.8.6 Миграции",
     "webarchitect609/bitrix-user-type": "^0.1 Создание кастомных полей для пользовательских свойств",
     "webarchitect609/bitrix-iblock-property-type": "^1.0.3 Создане кастомных полей для свойств инфоблока",

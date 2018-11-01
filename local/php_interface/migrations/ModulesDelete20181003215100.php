@@ -3,7 +3,7 @@
 use Bitrix\Main\ModuleManager;
 use Vf92\BitrixUtils\Migration\SprintMigrationBase;
 
-class DeleteModules20181003215100 extends SprintMigrationBase
+class ModulesDelete20181003215100 extends SprintMigrationBase
 {
     protected $description = 'Удаление модулей';
 
