@@ -1,0 +1,11 @@
+---
+
+ajax.routes:
+  resource: "ajax.yml"
+  prefix:   /ajax
+#  condition: "request.isXmlHttpRequest()"
+
+landing.routes:
+  resource: "s3/routes.yml"
+  prefix:   /landing
+#  condition: "request.isXmlHttpRequest()"
