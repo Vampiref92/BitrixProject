@@ -1,0 +1,6 @@
+---
+
+ajax.routes:
+  resource: "ajax.yml"
+  prefix:   /ajax
+#  condition: "request.isXmlHttpRequest()"

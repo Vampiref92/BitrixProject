@@ -1,0 +1,6 @@
+---
+
+#form.send:
+#  path:     /form/send/
+#  defaults: { _controller: '\App\Common\Controller\Ajax\Form::addAction' }
+#  methods: [POST]

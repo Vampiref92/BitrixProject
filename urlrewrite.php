@@ -5,7 +5,7 @@ $arUrlRewrite=array (
     'CONDITION' => '##',
     'RULE' => '',
     'ID' => '',
-    'PATH' => '/local/routes/base/symfony_router.php',
+    'PATH' => '/local/routes/symfony_router.php',
     'SORT' => 999,
   ),
 );
