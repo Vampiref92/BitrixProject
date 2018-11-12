@@ -8,18 +8,17 @@
 /node_modules
 /local/node_modules
 
-/.idea
-/.bash_history
-/.viminfo
+.idea
+.bash_history
+.viminfo
 .DS_Store
 .php_cs.cache
 
-.gitmodules
-
 .well-known
-/robots.txt
+robots.txt
 *.lock
 *.log
+log.txt
 sitemap*.xml
 google*.html
 yandex*.html
@@ -29,3 +28,9 @@ yandex*.txt
 /local/php_interface/.project_settings.local.php
 /local/tools/auto_deploy
 /local/tools/deploy_settings/base.ini
+
+sftp-config.json
+*.min.css
+*.min.js
+*.map.js
+*.js.map
