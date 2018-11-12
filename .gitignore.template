@@ -30,7 +30,3 @@ yandex*.txt
 /local/tools/deploy_settings/base.ini
 
 sftp-config.json
-*.min.css
-*.min.js
-*.map.js
-*.js.map
