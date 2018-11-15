@@ -1,0 +1,14 @@
+['"]IBLOCK_?(ID)?['"]\s*=>?\s*['"]?\d+['"]?
+
+
+(['"]IBLOCK_?ID['"]\s*=>?\s*)['"]?2['"]?
+
+$1 \\Vf92\\BitrixUtils\\Iblock\\IblockHelper::getIblockId(\\App\\KuhniUnited\\Enum\\IblockType::CONTENT, \\App\\KuhniUnited\\Enum\\IblockCode::CONTENT_FEATURES_COLLECTION)
+
+
+(['"]IBLOCK_?TYPE['"]\s*=>?\s*)['"]\D['"]
+
+(['"]IBLOCK_?TYPE['"]\s*=>?\s*)['"]elbrus['"]
+$1 \\GlcGroup\\Enum\\IblockType::RU
+
+

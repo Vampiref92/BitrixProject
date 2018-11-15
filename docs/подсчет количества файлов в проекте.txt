@@ -1,0 +1,6 @@
+подсчет количества файлов в проекте
+find . ! -path "./bitrix/*" ! -path "./upload/*" ! -path "./local/log/*" ! -path "./local/modules/sprint.migration/*" ! -path "./vendor/*" ! -path "./local/vendor/*" -type f -name "*.php" | wc
+
+подсчет занимаего места с сортировкой по убыванию
+du -s *|sort -nr|cut -f 2-|while read a;do du -hs $a;done
+

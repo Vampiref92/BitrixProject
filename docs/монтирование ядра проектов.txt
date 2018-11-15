@@ -1,0 +1,8 @@
+sudo mount --bind /home/frolov/bitrixFiles/toplivnye-karty/bitrix /home/frolov/projects/work/toplivnye-karty/bitrix
+sudo mount --bind /home/frolov/bitrixFiles/toplivnye-karty/upload /home/frolov/projects/work/toplivnye-karty/upload
+
+sudo mount --bind /home/frolov/bitrixFiles/biopie/bitrix /home/frolov/projects/work/biopie/bitrix
+sudo mount --bind /home/frolov/bitrixFiles/biopie/upload /home/frolov/projects/work/biopie/upload
+
+sudo mount --bind /home/frolov/bitrixFiles/met/bitrix /home/frolov/projects/work/met/bitrix
+sudo mount --bind /home/frolov/bitrixFiles/met/upload /home/frolov/projects/work/met/upload

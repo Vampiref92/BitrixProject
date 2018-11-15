@@ -1,0 +1,12 @@
+sudo mkdir /mnt/newhome
+sudo mount -t ext4 /dev/sdb1 /mnt/newhome
+sudo cp -a /home/* /mnt/newhome/
+sudo umount /mnt/newhome
+sudo mv /home /oldhome
+sudo mount /dev/sdb1 /home
+sudo mount /dev/sdb1 /home
+
+UUID="47812554-1197-488b-8f20-26ab95918142" /home    ext4 defaults    0 2
+
+sudo rm -rf /oldhome
+sudo rm -rf /mnt/newhome  

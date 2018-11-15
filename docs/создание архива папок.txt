@@ -1,0 +1,34 @@
+создание архива таром
+в админке через командную php строку
+------
+bitrix
+set_time_limit(0);
+exec('cd '.$_SERVER['DOCUMENT_ROOT'].' && tar --exclude "./bitrix/tmp/*" --exclude "./bitrix/cache/*" --exclude "./bitrix/managed_cache/*" --exclude "./bitrix/stack_cache/*" --exclude "./bitrix/html/*" --exclude "*.sql" --exclude "*.tar" --exclude "*.gz" -czf ./local/bitrix.tar.gz ./bitrix');
+
+upload
+set_time_limit(0);
+exec('cd '.$_SERVER['DOCUMENT_ROOT'].' && tar --exclude "./upload/tmp/*" --exclude "./upload/resize_cache/*" --exclude "*.tar" --exclude "*.gz" -czf ./local/upload.tar.gz ./upload');
+
+full
+set_time_limit(0);
+exec('cd '.$_SERVER['DOCUMENT_ROOT'].' && tar --exclude "./bitrix/tmp/*" --exclude "./bitrix/cache/*" --exclude "./bitrix/managed_cache/*" --exclude "./bitrix/stack_cache/*" --exclude "./bitrix/html/*" --exclude "*.sql" --exclude "./upload/tmp/*" --exclude "./upload/resize_cache/*" --exclude "*.tar" --exclude "*.gz" -czf ./site.tar.gz ./');
+
+в консоле
+------
+bitrix
+cd /home/b/biopie/public_html && tar --exclude "./bitrix/tmp/*" --exclude "./bitrix/cache/*" --exclude "./bitrix/managed_cache/*" --exclude "./bitrix/stack_cache/*" --exclude "./bitrix/html/*"  --exclude "*.tar" --exclude "*.gz" --exclude "*.tar.gz*" --exclude "*.sql" --exclude "./bitrix/backup/auto_lock" -czf ./bitrix.tar.gz ./bitrix
+
+upload
+cd /home/b/biopie/public_html && tar --exclude "./upload/tmp/*" --exclude "./upload/resize_cache/*" --exclude "*.tar" --exclude "*.gz" --exclude "*.tar.gz*" --exclude "*.sql" -czf ./upload.tar.gz ./upload
+
+full
+cd /home/b/biopie/public_html && tar --exclude "./bitrix/tmp/*" --exclude "./bitrix/cache/*" --exclude "./bitrix/managed_cache/*" --exclude "./bitrix/stack_cache/*" --exclude "./bitrix/html/*"  --exclude "./upload/tmp/*" --exclude "./upload/resize_cache/*" --exclude "*.tar" --exclude "*.gz" --exclude "*.tar.gz*" --exclude "*.sql" -czf ./site.tar.gz ./
+
+full_without_upload
+cd /home/b/biopie/public_html && tar --exclude "./bitrix/tmp/*" --exclude "./bitrix/cache/*" --exclude "./bitrix/managed_cache/*" --exclude "./bitrix/stack_cache/*" --exclude "./bitrix/html/*"  --exclude "./upload/*" --exclude "*.tar" --exclude "*.tar.gz*" --exclude "*.gz" --exclude "*.sql" -czf ./site_without_upload.tar.gz ./
+
+full_without_upload_bitrix
+cd /home/b/biopie/public_html && tar --exclude "./bitrix/* --exclude "./upload/*" --exclude "*.tar" --exclude "*.gz" --exclude "*.tar.gz*" --exclude "*.sql" -czf ./site_without_bitrix_upload.tar.gz ./
+
+bitrix
+

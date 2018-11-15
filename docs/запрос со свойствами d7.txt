@@ -1,0 +1,20 @@
+$iblockId = 1;
+        $propCode = 'CODE';
+        $propId = PropertyTable::query()
+            ->where('CODE', $propCode)
+            ->where('ACTIVE', 'Y')
+            ->where('IBLOCK_ID', $iblockId)
+            ->setSelect(['ID'])
+            ->setLimit(1)
+            ->setCacheTtl(360000) // кешируем получение id ибо не меняется
+            ->exec()->fetch()['ID'];
+        ElementTable::query()
+            ->setSelect(['PROP_' . $propCode => 'PROPS_SINGLE.PROPERTY_' . $propId, 'ID'])
+            ->where('IBLOCK_ID', $iblockId)
+            ->registerRuntimeField(new ReferenceField('PROPS_SINGLE',
+                \Vf92\Constructor\IblockPropEntityConstructor::getDataClass($iblockId),
+                Join::on('this.ID', 'ref.IBLOCK_ELEMENT_ID')))
+            ->registerRuntimeField(new ReferenceField('PROPS_MULTIPLE',
+                \Vf92\Constructor\IblockPropMultipleEntityConstructor::getDataClass($iblockId),
+                Join::on('this.ID', 'ref.IBLOCK_ELEMENT_ID')))
+            ->exec();

@@ -1,0 +1,11 @@
+mysqldump -u USER -pPASSWORD DATABASE | gzip > dumpname.sql.gz
+gunzip < dumpfile.sql.gz | mysql -u USER -pPASSWORD DATABASE
+
+-------
+mysqldump -u biopie_new -pgSG6NHZ4 biopie_new | gzip  > biopie.sql.gz
+
+gunzip < biopie.sql.gz | mysql -u biopie_new -pgSG6NHZ4 biopie_new
+mysql -uroot -pgSG6NHZ4 biopie_new -P 3306 < biopie.sql
+
+exec('cd '.$_SERVER['DOCUMENT_ROOT'].'/upload && mysqldump -u biopie_new -pgSG6NHZ4 biopie_new | gzip  > biopie.sql.gz');
+exec('cd '.$_SERVER['DOCUMENT_ROOT'].'/upload && gunzip < biopie.sql.gz | mysql -u biopie_new -pgSG6NHZ4 biopie_new');

@@ -1,0 +1,8 @@
+регулярка поиска шаблонов по названию шаблона
+\$APPLICATION->IncludeComponent\(\n*\s*['"][^'"]*['"],?\n*\s*['"]bread['"]
+
+\$APPLICATION->IncludeComponent\(\n*\s*['"][^'"]*:news.detail['"],?\n*\s*['"]designer['"]
+
+
+регулярка поиска изображений
+<img[^>]*src=['"][^'"]*\$[^'"]*['"]

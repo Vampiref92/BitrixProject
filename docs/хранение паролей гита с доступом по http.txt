@@ -1,0 +1,2 @@
+хранение паролей гита с доступом по http
+git config credential.helper store

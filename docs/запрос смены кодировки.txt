@@ -1,0 +1,5 @@
+SELECT CONCAT('ALTER TABLE `', t.`TABLE_SCHEMA`, '`.`', t.`TABLE_NAME`, '` CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;') as sqlcode
+  FROM `information_schema`.`TABLES` t
+ WHERE 
+  t.`TABLE_SCHEMA` = 'vbrr.ru'
+AND t.`TABLE_COLLATION` <> "utf8_unicode_ci"

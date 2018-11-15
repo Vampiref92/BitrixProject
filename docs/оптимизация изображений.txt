@@ -1,0 +1,3 @@
+find -type f -name "*.jpg" -exec jpegoptim --strip-all --all-progressive {} \;
+find -type f -name "*.jpeg" -exec jpegoptim --strip-all --all-progressive {} \;
+find -type f -name "*.png" -exec optipng -o7 {} \; 

@@ -1,0 +1,12 @@
+folder_name="upload"
+grep_path="${PROJECT_NAME}/htdocs/web/${folder_name}"
+if ! [ -d ./${folder_name} ]; then
+   mkdir ${folder_name}
+fi
+res=`mount | grep "${grep_path}"`
+if [ "${res}" ]; then
+	echo "${UPLOAD_PROJECT_DIR} is already mounted"
+else
+	sudo mount --bind ${UPLOAD_PROJECT_DIR} ./${folder_name}
+	echo "The directory ${UPLOAD_PROJECT_DIR} is mounted!"
+fi 
