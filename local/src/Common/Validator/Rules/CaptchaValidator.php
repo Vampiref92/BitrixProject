@@ -2,7 +2,7 @@
 
 namespace ProjectName\Common\Validator\Rules;
 
-use App\Common\Enum\External;
+use ProjectName\Common\Enum\External;
 use Rakit\Validation\Rule;
 use Vf92\ReCaptcha\ReCaptcha;
 

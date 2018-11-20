@@ -3,6 +3,7 @@
 use App\Common\Validator\Rules\CaptchaValidator;
 use App\Common\Validator\Rules\NumString;
 use App\Common\Validator\Rules\PhoneValidator;
+use App\Common\Validator\Rules\CyrillicAlpha;
 use Rakit\Validation\Validator;
 
 /**
@@ -29,5 +30,6 @@ class ValidatorProvider
         self::$validator->addValidator('phone', new PhoneValidator());
         self::$validator->addValidator('recaptcha', new CaptchaValidator());
         self::$validator->addValidator('numString', new NumString());
+        self::$validator->addValidator('cyrillic', new CyrillicAlpha());
     }
 }
