@@ -1,8 +1,11 @@
 /bitrix
+!/bitrix/templates/
+!/bitrix/php_interface/
 /upload
 /vendor
 /local/vendor
 /local/cache
+/local/tmp
 /local/modules/sprint.migration
 
 /node_modules
@@ -15,18 +18,18 @@
 .php_cs.cache
 
 .well-known
-robots.txt
+/robots.txt
 *.lock
 *.log
 log.txt
-sitemap*.xml
-google*.html
-yandex*.html
-google*.txt
-yandex*.txt
+/sitemap*.xml
+/google*.html
+/yandex*.html
+/google*.txt
+/yandex*.txt
 
 /local/php_interface/.project_settings.local.php
 /local/tools/auto_deploy
 /local/tools/deploy_settings/base.ini
 
-sftp-config.json
+/sftp-config.json
