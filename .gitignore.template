@@ -1,6 +1,7 @@
 /bitrix
 !/bitrix/templates/
 !/bitrix/php_interface/
+!/bitrix/.settings.php
 /upload
 /vendor
 /local/vendor
