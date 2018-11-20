@@ -29,7 +29,7 @@ log.txt
 /google*.txt
 /yandex*.txt
 
-/local/php_interface/.project_settings.local.php
+/local/php_interface/.settings.local.php
 /local/tools/auto_deploy
 /local/tools/deploy_settings/base.ini
 
