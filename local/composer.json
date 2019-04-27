@@ -31,9 +31,12 @@
   },
   "require": {
     "wikimedia/composer-merge-plugin": "dev-master",
-    "vf92/bitrix-base": "^2.6.8",
+
+    "vf92/bitrix-base": "^2.8.1",
     "vf92/auto_deploy": "^1.2.4",
+
     "andreyryabin/sprint.migration": "^2.8.6",
+
     "webarchitect609/bitrix-user-type": "^0.1",
     "webarchitect609/bitrix-iblock-property-type": "^1.0.3",
 
@@ -52,22 +55,32 @@
   },
   "suggest": {
     "bitrix": ">=16.5.0, желателен битрикс >= 17.5.2, чтобы работало where в orm, для работы композера от битрикс нужна версия >= 18.0.2, добавить в merge_plugin ../bitrix/composer-bx.json",
+
     "vf92/bitrix-base": "^2.6.8 Набор вспомогательных классов",
     "vf92/auto_deploy": "^1.2.4 Автодеплоер",
+    "vf92/recaptcha-bitrix": "^1.4 рекаптча от битрикс",
+
     "andreyryabin/sprint.migration": "^2.8.6 Миграции",
+
     "webarchitect609/bitrix-user-type": "^0.1 Создание кастомных полей для пользовательских свойств",
     "webarchitect609/bitrix-iblock-property-type": "^1.0.3 Создане кастомных полей для свойств инфоблока",
+
     "symfony/routing": ">=3.4 Роутинг",
     "symfony/yaml": ">=3.1 работа с yaml файлами - по факту идет вместе с конфигами",
     "symfony/config": ">=3.1 Для работы с конфигами",
     "symfony/console": ">=3.1 Консоль",
-    "vf92/recaptcha-bitrix": "^1.4 рекаптча от битрикс",
+
     "guzzlehttp/guzzle": "^6.3 удобная обертка над curl",
+
     "rakit/validation": "^0.14.0 валидатор данных для их проверки",
-    "jms/serializer": "^1.13 Сериализатор данных - напрмиер из массива в объект и обратно - в битирксе с версии 18.0.2 - появились свои объекты",
     "respect/validation": "^1.1.25 еще один валидатор - выбираем какой нравится больше",
+
+    "jms/serializer": "^1.13 Сериализатор данных - напрмиер из массива в объект и обратно - в битирксе с версии 18.0.2 - появились свои объекты",
+
     "phpmailer/phpmailer": "^6.0 отправка почты",
+
     "php-amqplib/rabbitmq-bundle": "~1.13.0 Сервер очередей",
+
     "cdotsunited/php-cs-fixer-config": "^1.4 Базовый набор правил",
     "friendsofphp/php-cs-fixer": "^2.13 php-cs-fixer - фиксер по правилам",
     "codeception/codeception": "^2.5 Тестирвоание codeception"

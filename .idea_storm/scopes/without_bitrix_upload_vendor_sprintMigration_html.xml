@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="without_bitrix_upload_vendor_sprintMigration_html" pattern="!file:.idea//*&amp;&amp;!file:bitrix//*&amp;&amp;!file:upload//*&amp;&amp;!file:local/log//*&amp;&amp;!file:local/modules/sprint.migration//*&amp;&amp;!file:local/vendor//*&amp;&amp;!file:local/composer.phar&amp;&amp;!file:html//*" />
+</component>

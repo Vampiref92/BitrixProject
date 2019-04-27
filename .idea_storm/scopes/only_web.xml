@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="only_web" pattern="!file:.idea//*&amp;&amp;!file:bitrix//*&amp;&amp;!file:html//*&amp;&amp;!file:local//*&amp;&amp;!file:upload//*" />
+</component>
