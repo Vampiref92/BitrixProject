@@ -39,6 +39,8 @@
 
     "webarchitect609/bitrix-user-type": "^0.1",
     "webarchitect609/bitrix-iblock-property-type": "^1.0.3",
+    "webarchitect609/bitrix-cache": "^1.0",
+    "webarchitect609/bitrix-neverinclude": "^0.4.2",
 
     "symfony/routing": ">=3.4",
     "symfony/expression-language": ">=3.4",
@@ -64,6 +66,8 @@
 
     "webarchitect609/bitrix-user-type": "^0.1 Создание кастомных полей для пользовательских свойств",
     "webarchitect609/bitrix-iblock-property-type": "^1.0.3 Создане кастомных полей для свойств инфоблока",
+    "webarchitect609/bitrix-cache": "^1.0 кеширование с функциоей обратного вызова",
+    "webarchitect609/bitrix-neverinclude": "^0.4.2 автоинклуд битриксовых модулей",
 
     "symfony/routing": ">=3.4 Роутинг",
     "symfony/yaml": ">=3.1 работа с yaml файлами - по факту идет вместе с конфигами",
