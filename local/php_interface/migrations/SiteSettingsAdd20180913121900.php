@@ -7,6 +7,7 @@ use Bitrix\Main\Config\Option;
 use Bitrix\Main\GroupTable;
 use Bitrix\Main\SiteDomainTable;
 use Bitrix\Main\SiteTable;
+use Bitrix\Main\SiteTemplateTable;
 use Vf92\BitrixUtils\Config\Dbconn;
 use Vf92\BitrixUtils\Migration\SprintMigrationBase;
 use Vf92\MiscUtils\EnvType;
@@ -22,6 +23,7 @@ class SiteSettingsAdd20180913121900 extends SprintMigrationBase
         $siteName = 'SiteName';
         $siteNameFull = 'SiteNameFull';
         $serverName = 'site_address.ru';
+        $templateName = 'main';
         /** устанавливать ли в главном модуле email, site_name, server_name */
         $setMainModuleSiteSettings = true;
 //        $email = 'info@' . $serverName;
@@ -68,6 +70,14 @@ class SiteSettingsAdd20180913121900 extends SprintMigrationBase
             }
         }
 
+        //Установка шаблона сайта
+        SiteTemplateTable::add([
+            'SITE_ID' => $siteId,
+            'CONDITION' => '',
+            'SORT' => 1,
+            'TEMPLATE' => $templateName,
+        ]);
+
         if ($setMainModuleSiteSettings) {
             Option::set('main', 'site_name', $siteNameFull);
             Option::set('main', 'server_name', $serverName);
@@ -106,7 +116,7 @@ class SiteSettingsAdd20180913121900 extends SprintMigrationBase
         Option::set('main', 'event_log_marketplace', 'Y');
 
         // установка для разработки
-        if (EnvType::isDev()) {
+        if (!EnvType::isProd()) {
             Option::set('main', 'update_devsrv', 'Y');
         } else {
             Option::set('main', 'update_devsrv', 'N');
