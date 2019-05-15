@@ -2,8 +2,10 @@
 
 use Bitrix\Main\Config\Configuration;
 use Bitrix\Main\DB\MysqliConnection;
+use Bitrix\Main\InvalidOperationException;
 use Vf92\BitrixUtils\Config\Dbconn;
 use Vf92\BitrixUtils\Migration\SprintMigrationBase;
+use function array_merge;
 
 class DatabaseChange20181003215200 extends SprintMigrationBase
 {
@@ -29,7 +31,7 @@ class DatabaseChange20181003215200 extends SprintMigrationBase
             ];
             foreach ($dbList as &$item) {
                 /** @noinspection SlowArrayOperationsInLoopInspection */
-                $item = \array_merge($baseConfig, $item);
+                $item = array_merge($baseConfig, $item);
             }
             unset($item);
             $additionalConfig = $dbList;
@@ -37,7 +39,12 @@ class DatabaseChange20181003215200 extends SprintMigrationBase
             $dbList = array_merge($configuration->get('connections'), $additionalConfig);
 
             $configuration->addReadonly('connections', $dbList);
-            $configuration->saveConfiguration();
+            try {
+                $configuration->saveConfiguration();
+            } catch (InvalidOperationException $e) {
+                $this->log()->error('Ошибка сохранения конфигурации');
+                return false;
+            }
 
             $dbConn = Dbconn::get();
             $dbConn['db']['Host'] = $dbList['default']['host'];
@@ -49,6 +56,7 @@ class DatabaseChange20181003215200 extends SprintMigrationBase
 
             $this->log()->info('Настройки Бд успешно сохранены');
         }
+        return true;
     }
 
     public function down()

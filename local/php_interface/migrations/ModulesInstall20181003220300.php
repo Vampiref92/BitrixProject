@@ -1,6 +1,7 @@
 <?php namespace Sprint\Migration;
 
 use Bitrix\Main\ModuleManager;
+use CModule;
 use Vf92\BitrixUtils\Migration\SprintMigrationBase;
 
 class ModulesInstall20181003220300 extends SprintMigrationBase
@@ -17,10 +18,8 @@ class ModulesInstall20181003220300 extends SprintMigrationBase
         /** @todo не проверено */
         //Установка модулей
         foreach ($installModules as $installModule) {
-            if (!ModuleManager::isModuleInstalled($installModule)) {
-                if ($ob = \CModule::CreateModuleObject($installModule)) {
-                    $ob->DoInstall();
-                }
+            if (!ModuleManager::isModuleInstalled($installModule) && $ob = CModule::CreateModuleObject($installModule)) {
+                $ob->DoInstall();
             }
         }
         $this->log()->info('Установка модулей успешно завершена');

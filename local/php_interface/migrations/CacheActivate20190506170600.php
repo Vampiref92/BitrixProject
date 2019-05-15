@@ -1,6 +1,7 @@
 <?php namespace Sprint\Migration;
 
 use Bitrix\Main\Config\Option;
+use Exception;
 use Vf92\BitrixUtils\Migration\SprintMigrationBase;
 
 class CacheActivate20190506170600 extends SprintMigrationBase
@@ -9,19 +10,31 @@ class CacheActivate20190506170600 extends SprintMigrationBase
 
     public function up()
     {
-        //Активация управляемого кеша
-        Option::set('main', 'component_cache_on', 'Y');
+        try {
+            //Активация управляемого кеша
+            Option::set('main', 'component_cache_on', 'Y');
 
-        //Активация автокеширвоания
-        Option::set('main', 'component_managed_cache_on', 'Y');
+            //Активация автокеширвоания
+            Option::set('main', 'component_managed_cache_on', 'Y');
+        } catch (Exception $e) {
+            $this->log()->error('Ошибка установки опций сайта - ' . $e->getMessage());
+            return false;
+        }
+        return true;
     }
 
     public function down()
     {
-        //Деактивация управляемого кеша
-        Option::set('main', 'component_cache_on', 'N');
+        try {
+            //Деактивация управляемого кеша
+            Option::set('main', 'component_cache_on', 'N');
 
-        //Деактивация автокеширвоания
-        Option::set('main', 'component_managed_cache_on', 'N');
+            //Деактивация автокеширвоания
+            Option::set('main', 'component_managed_cache_on', 'N');
+        } catch (Exception $e) {
+            $this->log()->error('Ошибка установки опций сайта - ' . $e->getMessage());
+            return false;
+        }
+        return true;
     }
 }

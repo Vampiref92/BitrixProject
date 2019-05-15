@@ -1,9 +1,15 @@
 <?php namespace Sprint\Migration;
 
+use Bitrix\Main\ArgumentOutOfRangeException;
 use Bitrix\Main\Composite\Helper;
 use Bitrix\Main\Config\Option;
+use CGroup;
 use Vf92\BitrixUtils\Migration\SprintMigrationBase;
 use Vf92\MiscUtils\EnvType;
+use function defined;
+use function extension_loaded;
+use function in_array;
+use function is_array;
 
 class CompositSet20181031181800 extends SprintMigrationBase
 {
@@ -65,11 +71,11 @@ class CompositSet20181031181800 extends SprintMigrationBase
         $compositeOptions['BANNER_STYLE'] = $settings['BANNER_STYLE'];
         $compositeOptions['EXCLUDE_PARAMS'] = $settings['EXCLUDE_PARAMS'];
 
-        if (($storage === 'memcached' || $storage === 'memcached_cluster') && \extension_loaded('memcache')) {
+        if (($storage === 'memcached' || $storage === 'memcached_cluster') && extension_loaded('memcache')) {
             $compositeOptions['MEMCACHED_HOST'] = $composite_memcached_host;
             $compositeOptions['MEMCACHED_PORT'] = $composite_memcached_port;
 
-            if (\defined('BX_CLUSTER_GROUP')) {
+            if (defined('BX_CLUSTER_GROUP')) {
                 $compositeOptions['MEMCACHED_CLUSTER_GROUP'] = BX_CLUSTER_GROUP;
             }
         } else {
@@ -78,16 +84,14 @@ class CompositSet20181031181800 extends SprintMigrationBase
 
         $compositeOptions['STORAGE'] = $storage;
 
-        if ($groups !== null && \is_array($groups)) {
+        if ($groups !== null && is_array($groups)) {
             $compositeOptions['GROUPS'] = [];
             $b = '';
             $o = '';
-            $rsGroups = \CGroup::GetList($b, $o, []);
+            $rsGroups = CGroup::GetList($b, $o, []);
             while ($arGroup = $rsGroups->Fetch()) {
-                if ($arGroup['ID'] > 2) {
-                    if (\in_array($arGroup['ID'], $groups, true)) {
-                        $compositeOptions['GROUPS'][] = $arGroup['ID'];
-                    }
+                if (($arGroup['ID'] > 2) && in_array($arGroup['ID'], $groups, true)) {
+                    $compositeOptions['GROUPS'][] = $arGroup['ID'];
                 }
             }
         }
@@ -107,11 +111,11 @@ class CompositSet20181031181800 extends SprintMigrationBase
         if ($composite_cache_mode !== null) {
             if ($composite_cache_mode === 'standard_ttl') {
                 $compositeOptions['AUTO_UPDATE'] = 'Y';
-                $ttl = $composite_standard_ttl !== null ? (int)$composite_standard_ttl : 120;
+                $ttl = $composite_standard_ttl !== null ? $composite_standard_ttl : 120;
                 $compositeOptions['AUTO_UPDATE_TTL'] = $ttl;
             } elseif ($composite_cache_mode === 'no_update') {
                 $compositeOptions['AUTO_UPDATE'] = 'N';
-                $ttl = $composite_no_update_ttl !== null ? (int)$composite_no_update_ttl : 600;
+                $ttl = $composite_no_update_ttl !== null ? $composite_no_update_ttl : 600;
                 $compositeOptions['AUTO_UPDATE_TTL'] = $ttl;
             } else {
                 $compositeOptions['AUTO_UPDATE'] = 'Y';
@@ -128,18 +132,24 @@ class CompositSet20181031181800 extends SprintMigrationBase
             $compositeOptions['FRAME_MODE'] = 'Y';
             $compositeOptions['FRAME_TYPE'] = 'DYNAMIC_WITH_STUB';
             $compositeOptions['AUTO_UPDATE'] = 'Y';
-            $compositeOptions['AUTO_UPDATE_TTL'] = $composite_standard_ttl ?? 120;
+            $compositeOptions['AUTO_UPDATE_TTL'] = $composite_standard_ttl ?: 120;
         } else {
             $compositeOptions['AUTO_COMPOSITE'] = 'N';
             Helper::setEnabled(true);
         }
 
-        if ($composite_show_banner !== null && \in_array($composite_show_banner, ['Y', 'N'])) {
-            Option::set('main', '~show_composite_banner', $composite_show_banner);
+        if ($composite_show_banner !== null && in_array($composite_show_banner, ['Y', 'N'])) {
+            try {
+                Option::set('main', '~show_composite_banner', $composite_show_banner);
+            } catch (ArgumentOutOfRangeException $e) {
+                $this->log()->error('Ошибка сохранения конфигурации - ' . $e->getMessage());
+                return false;
+            }
         }
 
         Helper::setOptions($compositeOptions);
         bx_accelerator_reset();
+        return true;
     }
 
     public function down()
