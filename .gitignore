@@ -5,4 +5,5 @@
 .gitmodules
 /local/vendor
 /local/composer.lock
+/local/modules/sprint.migration/
 /local/tools/auto_deploy
