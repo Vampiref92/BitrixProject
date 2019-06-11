@@ -1,5 +1,4 @@
 Andrey Ryabin
-
 Alexandr Kuznecov
 Антон Тузлуков
 XOlegator
@@ -8,7 +7,7 @@ Sergey Polyakov
 Никита Морковкин
 Sergii Martynovych
 Егор Ковязин
-Marat Bakirov
+Марат Бакиров
 Dmitriy Tretyakov
 anton-citrus-soft NA
 Andrew Kopylov
@@ -17,3 +16,7 @@ Web Architect
 Игорь Пинчук
 ildar r. khasanshin
 Max Lyaptsev
+Горбунов Александр
+Михнев Никита
+Stepan Rodionov
+Alexandr Kuznetsov

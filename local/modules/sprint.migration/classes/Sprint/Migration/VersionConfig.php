@@ -22,55 +22,80 @@ class VersionConfig
     );
 
     public function __construct($configName = '') {
-        $configName = empty($configName) ? 'cfg' : $configName;
+        $this->configList = $this->searchConfigs();
 
-        $this->configList = array();
+        if (!isset($this->configList['cfg'])) {
+            $this->configList['cfg'] = $this->prepare('cfg');
+        }
 
+        if (!isset($this->configList['archive'])) {
+            $this->configList['archive'] = $this->prepare('archive', array(
+                'title' => GetMessage('SPRINT_MIGRATION_CONFIG_archive'),
+                'migration_dir' => $this->getArchiveDir('archive'),
+                'migration_table' => 'sprint_migration_archive',
+            ));
+        }
+
+        uasort($this->configList, function ($a, $b) {
+            return ($a['sort'] >= $b['sort']);
+        });
+
+        if (isset($this->configList[$configName])) {
+            $this->configCurrent = $this->configList[$configName];
+        } else {
+            $this->configCurrent = $this->configList['cfg'];
+        }
+    }
+
+    public function isExists($configName) {
+        return (isset($this->configList[$configName]));
+    }
+
+    public function getCurrent($key = false) {
+        return ($key) ? $this->configCurrent[$key] : $this->configCurrent;
+    }
+
+    public function getList() {
+        return $this->configList;
+    }
+
+    public function getName() {
+        return $this->getCurrent('name');
+    }
+
+    protected function searchConfigs() {
+        $result = array();
         $directory = new \DirectoryIterator(Module::getPhpInterfaceDir());
         foreach ($directory as $item) {
             if (!$item->isFile()) {
                 continue;
             }
 
-            if (!preg_match('/^migrations\.([a-z0-9_-]*)\.php$/i', $item->getFilename(), $matches)) {
+            $configName = $this->getConfigName($item->getFilename());
+            if (!$configName) {
                 continue;
             }
 
             /** @noinspection PhpIncludeInspection */
             $values = include $item->getPathname();
-            if (!$this->validConfig($values)) {
+            if (!$this->isValuesValid($values)) {
                 continue;
             }
 
-            $values['config_file'] = $item->getPathname();
-
-            $cname = $matches[1];
-            $this->configList[$cname] = $this->prepareConfig($cname, $values);
+            $result[$configName] = $this->prepare($configName, $values, $item->getPathname());
         }
 
-        if (isset($this->configList[$configName])) {
-            $this->configCurrent = $this->configList[$configName];
-        } else {
-            $this->configList['cfg'] = $this->prepareConfig('cfg', array(
-                'config_file' => GetMessage('SPRINT_MIGRATION_CONFIG_no'),
-            ));
-            $this->configCurrent = $this->configList['cfg'];
+        return $result;
+    }
+
+    protected function getConfigName($fileName) {
+        if (preg_match('/^migrations\.([a-z0-9_-]*)\.php$/i', $fileName, $matches)) {
+            return $matches[1];
         }
+        return false;
     }
 
-    public function getConfigName() {
-        return $this->configCurrent['name'];
-    }
-
-    public function getConfigList() {
-        return $this->configList;
-    }
-
-    public function getConfigCurrent() {
-        return $this->configCurrent;
-    }
-
-    protected function validConfig($values) {
+    protected function isValuesValid($values) {
         foreach ($this->availablekeys as $key) {
             if (isset($values[$key])) {
                 return true;
@@ -79,22 +104,29 @@ class VersionConfig
         return false;
     }
 
-    protected function prepareConfig($configName, $configValues = array()) {
-        $configValues = $this->prepareConfigValues($configValues);
+    protected function prepare($configName, $configValues = array(), $file = false) {
+        $configValues = $this->prepareValues($configValues);
+
         if (!empty($configValues['title'])) {
             $title = sprintf('%s (%s)', $configValues['title'], $configName);
         } else {
             $title = sprintf('%s (%s)', GetMessage('SPRINT_MIGRATION_CONFIG_TITLE'), $configName);
         }
 
+        if (isset($configValues['title'])) {
+            unset($configValues['title']);
+        }
+
         return array(
             'name' => $configName,
+            'sort' => $this->getSort($configName),
             'title' => $title,
+            'file' => $file,
             'values' => $configValues,
         );
     }
 
-    protected function prepareConfigValues($values = array()) {
+    protected function prepareValues($values = array()) {
         if (empty($values['migration_extend_class'])) {
             $values['migration_extend_class'] = 'Version';
         }
@@ -156,16 +188,96 @@ class VersionConfig
         return $values;
     }
 
-    public function getConfigVal($name, $default = '') {
-        if (isset($this->configCurrent['values'][$name])) {
-            if (is_bool($this->configCurrent['values'][$name])) {
-                return $this->configCurrent['values'][$name];
-            } elseif (!empty($this->configCurrent['values'][$name])) {
-                return $this->configCurrent['values'][$name];
+    public function getVal($name, $default = '') {
+        $values = $this->getCurrent('values');
+
+        if (isset($values[$name])) {
+            if (is_bool($values[$name])) {
+                return $values[$name];
+            } elseif (!empty($values[$name])) {
+                return $values[$name];
             }
         }
 
         return $default;
+    }
+
+    public function createConfig($configName) {
+        $fileName = 'migrations.' . $configName . '.php';
+        if (!$this->getConfigName($fileName)) {
+            return false;
+        }
+
+        $configPath = Module::getPhpInterfaceDir() . '/' . $fileName;
+        if (is_file($configPath)) {
+            return false;
+        }
+
+        if (isset($this->configList[$configName])) {
+            $curValues = $this->configList[$configName]['values'];
+            $configValues = array(
+                'migration_dir' => $this->getRelativeDir($curValues['migration_dir']),
+                'migration_table' => $curValues['migration_table'],
+            );
+        } else {
+            $configValues = array(
+                'migration_dir' => $this->getArchiveDir($configName),
+                'migration_table' => 'sprint_migration_' . $configName,
+            );
+        }
+
+        file_put_contents($configPath, '<?php return ' . var_export($configValues, 1) . ';');
+        return is_file($configPath);
+    }
+
+    public function deleteConfig($configName) {
+        $fileName = 'migrations.' . $configName . '.php';
+        if (!$this->getConfigName($fileName)) {
+            return false;
+        }
+
+        if (!isset($this->configList[$configName])) {
+            return false;
+        }
+
+        $configFile = $this->configList[$configName]['file'];
+
+        $vmFrom = new VersionManager($configName);
+        $vmFrom->clean();
+
+        if (!empty($configFile) && is_file($configFile)) {
+            unlink($configFile);
+        }
+
+        return true;
+    }
+
+    protected function getRelativeDir($dir) {
+        $docroot = Module::getDocRoot();
+
+        if (strpos($dir, $docroot) === 0) {
+            $dir = substr($dir, strlen($docroot));
+        }
+
+        return $dir;
+    }
+
+    protected function getArchiveDir($dirname) {
+        $def = $this->configList['cfg'];
+
+        return $this->getRelativeDir(
+            $def['values']['migration_dir'] . '/' . $dirname
+        );
+    }
+
+    protected function getSort($configName) {
+        if ($configName == 'archive') {
+            return 110;
+        } elseif ($configName == 'cfg') {
+            return 100;
+        } else {
+            return 500;
+        }
     }
 
     protected function getDefaultBuilders() {
@@ -174,7 +286,15 @@ class VersionConfig
             'IblockExport' => '\Sprint\Migration\Builders\IblockExport',
             'HlblockExport' => '\Sprint\Migration\Builders\HlblockExport',
             'UserTypeEntities' => '\Sprint\Migration\Builders\UserTypeEntities',
+            'UserGroupExport' => '\Sprint\Migration\Builders\UserGroupExport',
+            'AgentExport' => '\Sprint\Migration\Builders\AgentExport',
+            'FormExport' => '\Sprint\Migration\Builders\FormExport',
+            'EventExport' => '\Sprint\Migration\Builders\EventExport',
             'CacheCleaner' => '\Sprint\Migration\Builders\CacheCleaner',
+            'Marker' => '\Sprint\Migration\Builders\Marker',
+            'Transfer' => '\Sprint\Migration\Builders\Transfer',
+            'Configurator' => '\Sprint\Migration\Builders\Configurator',
+            'Cleaner' => '\Sprint\Migration\Builders\Cleaner',
         );
     }
 

@@ -24,7 +24,7 @@ class HlblockHelper extends Helper
         );
 
         $result = [];
-        while ($hlblock = $dbres->fetch()){
+        while ($hlblock = $dbres->fetch()) {
             $hlblock['LANG'] = $this->getHblockLangs($hlblock['ID']);
             $result[] = $hlblock;
         }
@@ -57,8 +57,8 @@ class HlblockHelper extends Helper
     }
 
     public function getHlblockId($name) {
-        $aItem = $this->getHlblock($name);
-        return ($aItem && isset($aItem['ID'])) ? $aItem['ID'] : 0;
+        $item = $this->getHlblock($name);
+        return ($item && isset($item['ID'])) ? $item['ID'] : 0;
     }
 
     public function addHlblock($fields) {
@@ -84,9 +84,9 @@ class HlblockHelper extends Helper
     public function addHlblockIfNotExists($fields) {
         $this->checkRequiredKeys(__METHOD__, $fields, array('NAME'));
 
-        $aItem = $this->getHlblock($fields['NAME']);
-        if ($aItem) {
-            return $aItem['ID'];
+        $item = $this->getHlblock($fields['NAME']);
+        if ($item) {
+            return $item['ID'];
         }
 
         return $this->addHlblock($fields);
@@ -102,19 +102,19 @@ class HlblockHelper extends Helper
         $result = HL\HighloadBlockTable::update($hlblockId, $fields);
         if ($result->isSuccess()) {
             $this->replaceHblockLangs($hlblockId, $lang);
-            return true;
+            return $hlblockId;
         }
 
         $this->throwException(__METHOD__, implode(', ', $result->getErrors()));
     }
 
     public function updateHlblockIfExists($name, $fields) {
-        $aItem = $this->getHlblock($name);
-        if (!$aItem) {
+        $item = $this->getHlblock($name);
+        if (!$item) {
             return false;
         }
 
-        return $this->updateHlblock($aItem['ID'], $fields);
+        return $this->updateHlblock($item['ID'], $fields);
     }
 
     public function deleteHlblock($hlblockId) {
@@ -127,12 +127,12 @@ class HlblockHelper extends Helper
     }
 
     public function deleteHlblockIfExists($name) {
-        $aItem = $this->getHlblock($name);
-        if (!$aItem) {
+        $item = $this->getHlblock($name);
+        if (!$item) {
             return false;
         }
 
-        return $this->deleteHlblock($aItem['ID']);
+        return $this->deleteHlblock($item['ID']);
     }
 
     protected function getHblockLangs($hlblockId) {
@@ -147,9 +147,9 @@ class HlblockHelper extends Helper
         ));
 
 
-        while ($aItem = $dbres->fetch()) {
-            $result[$aItem['LID']] = array(
-                'NAME' => $aItem['NAME']
+        while ($item = $dbres->fetch()) {
+            $result[$item['LID']] = array(
+                'NAME' => $item['NAME']
             );
         }
 
@@ -204,4 +204,20 @@ class HlblockHelper extends Helper
             $this->addHblockLangs($hlblockId, $lang);
         }
     }
+
+
+    //version 2
+
+
+    public function saveHlblock($fields) {
+        $this->checkRequiredKeys(__METHOD__, $fields, array('NAME'));
+
+        $item = $this->getHlblock($fields['NAME']);
+        if ($item) {
+            return $this->updateHlblock($item['ID'], $fields);
+        } else {
+            return $this->addHlblock($fields);
+        }
+    }
+
 }

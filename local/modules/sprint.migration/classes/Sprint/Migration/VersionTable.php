@@ -6,41 +6,46 @@ class VersionTable extends AbstractTable
 {
 
     /**
-     * @return bool|\CDBResult
+     * @return array
      */
     public function getRecords() {
-        return $this->query('SELECT * FROM `#TABLE1#`');
+        $dbres = $this->query('SELECT * FROM `#TABLE1#`');
+        $result = array();
+        while ($item = $dbres->Fetch()){
+            $result[] = $item;
+        }
+
+        return $result;
     }
 
     /**
      * @param $versionName
-     * @return bool|\CDBResult
+     * @return array
      */
     public function getRecord($versionName) {
         return $this->query('SELECT * FROM `#TABLE1#` WHERE `version` = "%s"',
             $this->forSql($versionName)
-        );
+        )->Fetch();
     }
 
     /**
-     * @param $versionName
-     * @param $hash
+     * @param $meta
      * @return bool|\CDBResult
      */
-    public function addRecord($versionName,$hash='') {
+    public function addRecord($meta) {
         return $this->query('INSERT IGNORE INTO `#TABLE1#` (`version`, `hash`) VALUES ("%s", "%s")',
-            $this->forSql($versionName),
-            $this->forSql($hash)
+            $this->forSql($meta['version']),
+            $this->forSql($meta['hash'])
         );
     }
 
     /**
-     * @param $versionName
+     * @param $meta
      * @return bool|\CDBResult
      */
-    public function removeRecord($versionName) {
+    public function removeRecord($meta) {
         return $this->query('DELETE FROM `#TABLE1#` WHERE `version` = "%s"',
-            $this->forSql($versionName)
+            $this->forSql($meta['version'])
         );
     }
 
@@ -55,8 +60,12 @@ class VersionTable extends AbstractTable
 
         //upgrade2
         if (empty($this->query('SHOW COLUMNS FROM `#TABLE1#` LIKE "hash"')->Fetch())) {
-            $this->query('ALTER TABLE #TABLE1# ADD COLUMN `hash` VARCHAR(50) NULL AFTER `version`');
+            $this->query('ALTER TABLE `#TABLE1#` ADD COLUMN `hash` VARCHAR(50) NULL AFTER `version`');
         }
+    }
+
+    protected function dropTable(){
+        $this->query('DROP TABLE IF EXISTS `#TABLE1#`;');
     }
 
 }

@@ -32,7 +32,7 @@
   "require": {
     "wikimedia/composer-merge-plugin": "dev-master",
 
-    "vf92/bitrix-base": "^2.8.1",
+    "vf92/bitrix-base": "^2.12.0",
     "vf92/auto_deploy": "^1.2.4",
 
     "andreyryabin/sprint.migration": "^2.8.6",
@@ -54,6 +54,14 @@
     "dotsunited/php-cs-fixer-config": "^1.4",
     "friendsofphp/php-cs-fixer": "^2.13",
     "codeception/codeception": "^2.5"
+  },
+  "scripts": {
+    "post-install-cmd": [
+      "ProjectName\\Composer\\PostComposerUpdate::updateWebarchitect609BitrixCache"
+    ],
+    "post-update-cmd": [
+      "ProjectName\\Composer\\PostComposerUpdate::updateWebarchitect609BitrixCache"
+    ]
   },
   "suggest": {
     "bitrix": ">=16.5.0, желателен битрикс >= 17.5.2, чтобы работало where в orm, для работы композера от битрикс нужна версия >= 18.0.2, добавить в merge_plugin ../bitrix/composer-bx.json",
