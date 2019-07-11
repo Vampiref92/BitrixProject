@@ -27,8 +27,8 @@ $matcher = new UrlMatcher($routes, $context);
 
 // Find the current route
 try {
-    $pathinfo = $request->getPathInfo();
-    $attributes = $matcher->match($pathinfo);
+    $pathInfo = $request->getPathInfo();
+    $attributes = $matcher->match($pathInfo);
     $controller = $attributes['_controller'];
     unset($attributes['_controller']);
     $response = call_user_func_array($controller, $attributes);
